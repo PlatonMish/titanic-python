@@ -3,7 +3,11 @@
 # For example, here's several helpful packages to load
 
 #import numpy as np # linear algebra
-import pandas as pd # data processing, CSV file I/O (e.g. pd.read_csv)
+import pandas as pd
+from sklearn import preprocessing
+from sklearn.linear_model import LogisticRegression
+from sklearn.model_selection import train_test_split
+# data processing, CSV file I/O (e.g. pd.read_csv)
 
 # Input data files are available in the read-only "../input/" directory
 # For example, running this (by clicking run or pressing Shift+Enter) will list all files under the input directory
@@ -17,8 +21,8 @@ for dirname, _, filenames in os.walk('/kaggle/input'):
 # You can also write temporary files to /kaggle/temp/, but they won't be saved outside of the current session
 
 
-data = pd.read_csv("../input/titanic/train.csv")
-test = pd.read_csv("../input/titanic/test.csv")
+data = pd.read_csv("train.csv")
+test = pd.read_csv("test.csv")
 test_ids = test["PassengerId"]
 def clean(data):
     data = data.drop(["Ticket","Cabin", "Name","PassengerId"], axis=1)
@@ -31,7 +35,7 @@ def clean(data):
     return data
 
 data = clean(data)
-test = clean(test
+test = clean(test)
 
 data.head(5)
 
@@ -47,19 +51,21 @@ for col in cols:
 
 data.head(5)
 
-#from sklearn.linear_model import LogisticRegression
-#from sklearn.model_selection import train_test_split
-
+from sklearn import preprocessing
 Y = data["Survived"]
 X = data.drop ("Survived", axis = 1)
 
-X_train, X_val, y_train, y_val = train_test_split(X,y, test_size = 0.2, random_state=43)
 
-clf = LogisticRegression(random_state = 0, max_iter=1000).fit(X_train, y_train)
+X_train, X_val, Y_train, Y_val = train_test_split(X, Y, test_size=0.2, random_state=43)
+
+clf = LogisticRegression(random_state = 0, max_iter=1000).fit(X_train, Y_train)
+
+
+
 
 predictions = clf.predict(X_val)
 from sklearn.metrics import accuracy_score
-accuracy_score(y_val, predictions)
+accuracy_score(Y_val, predictions)
 
 submission_preds = clf.predict(test)
 
